@@ -10,6 +10,6 @@ addSbtPlugin("com.lucidchart" % "sbt-scalafmt-coursier" % "1.12")
 
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.5")
 
-addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.2.3")
+addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.2.2")
 
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.5.1")
