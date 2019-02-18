@@ -1,6 +1,6 @@
 # Vega-Lite4s
 [![Build Status](https://travis-ci.org/CoxAutomotiveDataSolutions/vegalite4s.svg?branch=master)](https://travis-ci.org/CoxAutomotiveDataSolutions/vegalite4s) 
-[![Maven Central](https://img.shields.io/maven-central/v/com.coxautodata/vegalite4s_2.11.svg)](https://search.maven.org/search?q=g:com.coxautodata%20AND%20a:vegalite4s*) [![Coverage Status](https://coveralls.io/repos/github/CoxAutomotiveDataSolutions/vegalite4s/badge.svg?branch=master)](https://coveralls.io/github/CoxAutomotiveDataSolutions/vegalite4s?branch=master) 
+[![Maven Central](https://img.shields.io/maven-central/v/com.coxautodata/vegalite4s_2.11.svg)](https://search.maven.org/search?q=g:com.coxautodata%20AND%20a:vegalite4s*) [![Coverage Status](https://img.shields.io/codecov/c/github/CoxAutomotiveDataSolutions/vegalite4s/master.svg)](https://codecov.io/gh/CoxAutomotiveDataSolutions/vegalite4s/branch/master) 
 
 ## What is Vega-Lite4s?
 
