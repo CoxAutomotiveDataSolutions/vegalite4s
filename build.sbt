@@ -46,15 +46,9 @@ lazy val core = project
       "org.webjars.npm" % "vega-lite" % vegaliteV % "test" intransitive (),
       "org.webjars.npm" % "vega" % vegaV % "test" intransitive (),
       "org.webjars.npm" % "vega-embed" % vegaembedV % "test" intransitive ()
-    ),
-    mappings in (Compile, packageBin) ++= mappings
-      .in(macros, Compile, packageBin)
-      .value,
-    mappings in (Compile, packageSrc) ++= mappings
-      .in(macros, Compile, packageSrc)
-      .value
+    )
   )
-  .dependsOn(macros % "compile-internal, test-internal")
+  .dependsOn(macros)
 
 lazy val macros = project
   .settings(
