@@ -6,7 +6,16 @@ import sbt.Keys.{developers, fork, homepage, scalaVersion, scmInfo}
 import sbt.url
 import xerial.sbt.Sonatype._
 
-// PROJECTS
+val circeV = "0.11.1"
+val scalafxV = "8.0.144-R12"
+val scalatestV = "3.0.4"
+val spark2V = "2.4.0"
+val vegaliteV = "2.6.0"
+val vegaV = "3.3.1"
+val vegaembedV = "3.29.1"
+val scalaloggingV = "3.9.0"
+val slf4jV = "1.7.16"
+val sparkV = "2.4.0"
 
 lazy val global = project
   .in(file("."))
@@ -25,83 +34,42 @@ lazy val core = project
   .settings(
     name := "vegalite4s",
     settings,
-    libraryDependencies ++= commonDependencies ++ coreDependencies,
-    mappings in (Compile, packageBin) ++= mappings
-      .in(macros, Compile, packageBin)
-      .value,
-    mappings in (Compile, packageSrc) ++= mappings
-      .in(macros, Compile, packageSrc)
-      .value
+    libraryDependencies ++= Seq(
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value % "compile",
+      "org.scalafx" %% "scalafx" % scalafxV % "compile",
+      "com.typesafe.scala-logging" %% "scala-logging" % scalaloggingV % "compile",
+      "org.slf4j" % "slf4j-simple" % slf4jV % "compile",
+      "io.circe" %% "circe-core" % circeV % "compile",
+      "io.circe" %% "circe-generic" % circeV % "compile",
+      "io.circe" %% "circe-parser" % circeV % "compile",
+      "org.scalatest" %% "scalatest" % scalatestV % "test",
+      "org.webjars.npm" % "vega-lite" % vegaliteV % "test" intransitive (),
+      "org.webjars.npm" % "vega" % vegaV % "test" intransitive (),
+      "org.webjars.npm" % "vega-embed" % vegaembedV % "test" intransitive ()
+    )
   )
-  .dependsOn(macros % "compile-internal, test-internal")
+  .dependsOn(macros)
 
 lazy val macros = project
   .settings(
     name := "vegalite4s-macros",
     settings,
-    libraryDependencies ++= commonDependencies
+    libraryDependencies ++= Seq(
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value % "compile")
   )
 
 lazy val spark2 = project
-  .settings(
-    name := "vegalite4s-spark2",
-    settings,
-    libraryDependencies ++= commonDependencies ++ sparkDependencies
-  )
+  .settings(name := "vegalite4s-spark2",
+            settings,
+            libraryDependencies ++= Seq(
+              "org.apache.spark" %% "spark-sql" % sparkV % "optional",
+              "org.scalatest" %% "scalatest" % scalatestV % "test"
+            ))
   .dependsOn(core)
-
-// DEPENDENCIES
-
-lazy val dependencies =
-  new {
-    val circeV = "0.11.1"
-    val scalafxV = "8.0.144-R12"
-    val scalatestV = "3.0.4"
-    val spark2V = "2.0.0"
-    val vegaliteV = "2.6.0"
-    val vegaV = "3.3.1"
-    val vegaembedV = "3.29.1"
-    val scalaloggingV = "3.9.0"
-    val slf4jV = "1.7.16"
-
-    val scalareflect = "org.scala-lang" % "scala-reflect" % projectScalaVersion
-    val vegalite = "org.webjars.npm" % "vega-lite" % vegaliteV
-    val vega = "org.webjars.npm" % "vega" % vegaV
-    val vegaembed = "org.webjars.npm" % "vega-embed" % vegaembedV
-    val scalafx = "org.scalafx" %% "scalafx" % scalafxV
-    val scalalogging = "com.typesafe.scala-logging" %% "scala-logging" % scalaloggingV
-    val slf4j = "org.slf4j" % "slf4j-simple" % slf4jV
-    val circecore = "io.circe" %% "circe-core" % circeV
-    val circegeneric = "io.circe" %% "circe-generic" % circeV
-    val circeparser = "io.circe" %% "circe-parser" % circeV
-    val spark2 = "org.apache.spark" %% "spark-sql" % spark2V
-
-    val scalatest = "org.scalatest" %% "scalatest" % scalatestV
-  }
-
-lazy val commonDependencies = Seq(
-  dependencies.circecore % "compile",
-  dependencies.circegeneric % "compile",
-  dependencies.circeparser % "compile",
-  dependencies.scalareflect % "compile",
-  dependencies.scalafx % "compile",
-  dependencies.scalalogging % "compile",
-  dependencies.slf4j % "compile",
-  dependencies.scalatest % "test"
-)
-
-lazy val coreDependencies = Seq(
-  dependencies.vegalite % "test" intransitive (),
-  dependencies.vega % "test" intransitive (),
-  dependencies.vegaembed % "test" intransitive ()
-)
-
-lazy val sparkDependencies = Seq(dependencies.spark2 % "optional")
 
 // SETTINGS
 lazy val settings =
-  commonSettings ++
-    scalafmtSettings
+  commonSettings
 
 lazy val compilerOptions = Seq(
   "-unchecked",
@@ -119,7 +87,7 @@ lazy val compilerOptions = Seq(
 lazy val commonSettings = Seq(
   organization in ThisBuild := "com.coxautodata",
   scalaVersion := projectScalaVersion,
-  crossScalaVersions in ThisBuild := Seq("2.11.12", "2.12.8"),
+  crossScalaVersions := Seq("2.11.12", "2.12.8"),
   fork in Test := true,
   publishArtifact in Test := true,
   publishConfiguration := publishConfiguration.value
@@ -162,10 +130,3 @@ lazy val commonSettings = Seq(
     )
   )
 )
-
-lazy val scalafmtSettings =
-  Seq(
-    scalafmtOnCompile := true,
-    scalafmtTestOnCompile := true,
-    scalafmtVersion := "1.2.0"
-  )

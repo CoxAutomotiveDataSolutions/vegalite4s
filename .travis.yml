@@ -10,12 +10,12 @@ stages:
 jobs:
   include:
     - stage: test
-      script: sbt clean coverage test coverageReport
+      script: sbt coverage +test coverageReport
       after_success:
         - bash <(curl -s https://codecov.io/bash)
     - stage: release
       script:
-        - sbt clean compile
+        - sbt +clean +package
         - sbt ci-release
 
 cache:
