@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.2 - 2019-03-11
+
 ### Fixed
 - Null and Java BigInteger and BigDecimal datatype conversions
 
