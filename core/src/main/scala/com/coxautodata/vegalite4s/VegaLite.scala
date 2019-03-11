@@ -99,7 +99,7 @@ class VegaLite(prov: VegaLiteProvider,
 
   /**
     * Render the given plot using the renderer provided.
-    * Default is to use the [[renderers.AutoSelectionRenderer]].
+    * Default is to use the [[renderers.ImplicitRenderers.AutoSelectionRenderer]].
     */
   def show(implicit r: PlotRenderer): Unit =
     r.render(this)
