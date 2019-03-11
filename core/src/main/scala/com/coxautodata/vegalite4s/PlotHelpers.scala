@@ -1,6 +1,8 @@
 package com.coxautodata.vegalite4s
 
 import java.sql.{Date, Timestamp}
+import java.math.{BigDecimal => JBigDecimal, BigInteger => JBigInteger}
+
 import io.circe.syntax._
 import io.circe.{Json, JsonObject}
 
@@ -53,18 +55,21 @@ object PlotHelpers {
   }
 
   def anyEncoder(v: Any): Json = v match {
-    case i: Int         => Json.fromInt(i)
-    case s: Short       => Json.fromInt(s)
-    case l: Long        => Json.fromLong(l)
-    case b: Boolean     => Json.fromBoolean(b)
-    case s: String      => Json.fromString(s)
-    case bI: BigInt     => Json.fromBigInt(bI)
-    case d: Double      => Json.fromDoubleOrString(d)
-    case f: Float       => Json.fromFloatOrString(f)
+    case i: Int => Json.fromInt(i)
+    case s: Short => Json.fromInt(s)
+    case l: Long => Json.fromLong(l)
+    case b: Boolean => Json.fromBoolean(b)
+    case s: String => Json.fromString(s)
+    case bI: BigInt => Json.fromBigInt(bI)
+    case bI: JBigInteger => Json.fromBigInt(bI)
+    case d: Double => Json.fromDoubleOrString(d)
+    case f: Float => Json.fromFloatOrString(f)
     case bD: BigDecimal => Json.fromBigDecimal(bD)
-    case t: Timestamp   => Json.fromString(t.toLocalDateTime.toString)
-    case d: Date        => Json.fromString(d.toLocalDate.toString)
-    case _              => Json.fromString(v.toString)
+    case bD: JBigDecimal => Json.fromBigDecimal(bD)
+    case t: Timestamp => Json.fromString(t.toLocalDateTime.toString)
+    case d: Date => Json.fromString(d.toLocalDate.toString)
+    case null => Json.Null
+    case _ => Json.fromString(v.toString)
   }
 
 }
