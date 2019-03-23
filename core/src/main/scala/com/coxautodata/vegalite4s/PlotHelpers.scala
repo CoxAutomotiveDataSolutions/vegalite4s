@@ -19,24 +19,6 @@ object PlotHelpers {
       plot.withField("title", Json.fromString(title))
 
     /**
-      * Add a set of data to the plot.
-      * Data is added under the `values` field in the `data` object
-      * on the plot.
-      *
-      * @param values Values to add. Map keys are used as columns names
-      */
-    def withData(values: => Seq[Map[String, Any]]): VegaLite = {
-
-      plot.withField(
-        "data",
-        Json.fromJsonObject(
-          JsonObject("values" -> values.map(_.mapValues(anyEncoder)).asJson)
-        )
-      )
-
-    }
-
-    /**
       * Set a height value for the current plot
       *
       * @param h Height of the plot
@@ -51,6 +33,28 @@ object PlotHelpers {
       */
     def withWidth(w: Int): VegaLite =
       plot.withField("width", Json.fromInt(w))
+
+  }
+
+  implicit class SpecConstructImplicits[T](spec: SpecConstruct[T]){
+
+    /**
+      * Add a set of data to the plot.
+      * Data is added under the `values` field in the `data` object
+      * on the plot.
+      *
+      * @param values Values to add. Map keys are used as columns names
+      */
+    def withData(values: => Seq[Map[String, Any]]): T = {
+
+      spec.withField(
+        "data",
+        Json.fromJsonObject(
+          JsonObject("values" -> values.map(_.mapValues(anyEncoder)).asJson)
+        )
+      )
+
+    }
 
   }
 
