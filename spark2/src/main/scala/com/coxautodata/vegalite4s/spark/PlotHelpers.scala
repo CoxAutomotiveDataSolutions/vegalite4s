@@ -6,6 +6,51 @@ import org.apache.spark.sql.Dataset
 
 object PlotHelpers {
 
+  implicit class VegaLiteSparkHelpers(plot: VegaLite) {
+
+    /**
+      * Produce a matrix of histogram plots, used for quickly visualising
+      * numerical columns in a plot.
+      * All non-numerical columns will be ignored
+      *
+      * @param ds                Dataset to visualise
+      * @param limit             See [[SpecConstructSparkHelpers.withData]]
+      * @param maxBins           Maximum number of bins to use when producing histogram
+      * @param plotMatrixColumns Number of columns of plots to use
+      * @param includeColumns    Columns from the Dataset to use. Uses all by default or when set to empty
+      * @return
+      */
+    def hist(ds: Dataset[_], limit: Int = 10000, maxBins: Int = 50, plotMatrixColumns: Int = 3, includeColumns: Seq[String] = Seq.empty): VegaLite = {
+      import org.apache.spark.sql.types.DataTypes._
+
+      val numericTypes = Seq(IntegerType, DoubleType, FloatType, LongType, ShortType)
+      val numericColumns = ds.schema.fields.filter(f => numericTypes.contains(f.dataType)).map(_.name)
+      val plotColumns = if (includeColumns.isEmpty) numericColumns else numericColumns.filter(includeColumns.contains)
+
+      val df = ds.toDF().select(numericColumns.map(ds.apply): _*)
+      plot
+        .withData(df, limit)
+        .withObject(
+          s"""{
+             |  "repeat": [${plotColumns.mkString("\"", "\", \"", "\"")}],
+             |  "columns": $plotMatrixColumns,
+             |  "spec": {
+             |      "mark": "bar",
+             |      "encoding": {
+             |        "x": {"field": {"repeat": "repeat"},"type": "quantitative", "bin": {"maxbins": $maxBins}},
+             |        "y": {
+             |          "aggregate": "count",
+             |          "type": "quantitative"
+             |        }
+             |      }
+             |   }
+             |}
+          """.stripMargin
+        )
+    }
+
+  }
+
   implicit class SpecConstructSparkHelpers[T](spec: SpecConstruct[T]) {
 
     /**
