@@ -8,7 +8,7 @@ package object providers {
     * A Vega dependency provider that references the latest available VegaLite library
     * available on the Jsdelivr CDN
     */
-  object LatestCDNVersion extends JsdelivrProvider("3", "2", "3")
+  object LatestCDNVersion extends JsdelivrProvider("5", "3", "4")
 
   /**
     * Generic trait used to represent a class providing a mechanism
