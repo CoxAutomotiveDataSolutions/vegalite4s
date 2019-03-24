@@ -4,7 +4,7 @@ import java.sql.{Date, Timestamp}
 import java.math.{BigDecimal => JBigDecimal, BigInteger => JBigInteger}
 
 import io.circe.syntax._
-import io.circe.{Json, JsonObject}
+import io.circe.{Json, JsonObject, ParsingFailure}
 
 object PlotHelpers {
 
@@ -17,24 +17,6 @@ object PlotHelpers {
       */
     def withTitle(title: String): VegaLite =
       plot.withField("title", Json.fromString(title))
-
-    /**
-      * Add a set of data to the plot.
-      * Data is added under the `values` field in the `data` object
-      * on the plot.
-      *
-      * @param values Values to add. Map keys are used as columns names
-      */
-    def withData(values: => Seq[Map[String, Any]]): VegaLite = {
-
-      plot.withField(
-        "data",
-        Json.fromJsonObject(
-          JsonObject("values" -> values.map(_.mapValues(anyEncoder)).asJson)
-        )
-      )
-
-    }
 
     /**
       * Set a height value for the current plot
@@ -51,6 +33,45 @@ object PlotHelpers {
       */
     def withWidth(w: Int): VegaLite =
       plot.withField("width", Json.fromInt(w))
+
+    /**
+      * Add a new layer to the plot. Layer is appended if
+      * layers already exist
+      *
+      * @param spec A function that takes an empty LayerSpec to a full spec
+      */
+    def withLayer(spec: LayerSpec => LayerSpec): VegaLite =
+      plot.withObjectTransformation {
+        o =>
+          val layer: Vector[Json] = o.apply("layer")
+            .getOrElse(Json.fromValues(Iterable.empty))
+            .asArray
+            .getOrElse(throw new ParsingFailure("Layer field must an array type", null))
+            .:+(spec(LayerSpec()).toJObject.asJson)
+          o.add("layer", Json.fromValues(layer))
+      }
+
+  }
+
+  implicit class SpecConstructImplicits[T](spec: SpecConstruct[T]) {
+
+    /**
+      * Add a set of data to the plot.
+      * Data is added under the `values` field in the `data` object
+      * on the plot.
+      *
+      * @param values Values to add. Map keys are used as columns names
+      */
+    def withData(values: => Seq[Map[String, Any]]): T = {
+
+      spec.withField(
+        "data",
+        Json.fromJsonObject(
+          JsonObject("values" -> values.map(_.mapValues(anyEncoder)).asJson)
+        )
+      )
+
+    }
 
   }
 
@@ -72,4 +93,20 @@ object PlotHelpers {
     case _ => Json.fromString(v.toString)
   }
 
+}
+
+case class LayerSpec(trans: Vector[JsonObject => JsonObject] = Vector.empty) extends SpecConstruct[LayerSpec] {
+  /**
+    * Add a generic object transformation to this plot
+    *
+    * @param t Transformation to add to the current list of transformations
+    * @return plot object with transformation applied
+    */
+  override def withObjectTransformation(t: JsonObject => JsonObject): LayerSpec = LayerSpec(trans :+ t)
+
+  /**
+    * Return the current plot definition as a [[JsonObject]]
+    */
+  lazy val toJObject: JsonObject =
+    trans.foldLeft(JsonObject())((z, t) => t(z))
 }

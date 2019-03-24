@@ -1,7 +1,7 @@
 package com.coxautodata.vegalite4s
 
 import java.sql.{Date, Timestamp}
-
+import io.circe._
 import com.coxautodata.vegalite4s.PlotHelpers._
 import org.scalatest.{FunSpec, Matchers}
 import java.math.{BigDecimal => JBigDecimal, BigInteger => JBigInteger}
@@ -174,6 +174,148 @@ class PlotHelpersSpec extends FunSpec with Matchers {
         |  },
         |  "height" : 200
         |}""".stripMargin)
+
+  }
+
+  describe("withLayer") {
+
+    it("should add layers to spec") {
+
+      val plot = VegaLite()
+        .withLayer {
+          _.withObject(
+            """
+              |{
+              |  "data": {
+              |    "url": "data/us-10m.json",
+              |    "format": {
+              |      "type": "topojson",
+              |      "feature": "states"
+              |    }
+              |  },
+              |  "projection": {
+              |    "type": "albersUsa"
+              |  },
+              |  "mark": {
+              |    "type": "geoshape",
+              |    "fill": "lightgray",
+              |    "stroke": "white"
+              |  }
+              |}
+            """.stripMargin
+          )
+        }
+        .withLayer {
+          _.withObject(
+            """
+              |    {
+              |      "projection": {
+              |        "type": "albersUsa"
+              |      },
+              |      "mark": "circle",
+              |      "encoding": {
+              |        "longitude": {
+              |          "field": "longitude",
+              |          "type": "quantitative"
+              |        },
+              |        "latitude": {
+              |          "field": "latitude",
+              |          "type": "quantitative"
+              |        },
+              |        "size": {"value": 10},
+              |        "color": {"value": "steelblue"}
+              |      }
+              |    }
+            """.stripMargin
+          )
+            .withData(
+              Seq(
+                Map("a" -> 1, "b" -> "one"),
+                Map("a" -> 2, "b" -> "two"),
+                Map("a" -> 3, "b" -> "three"),
+                Map("a" -> 4, "b" -> "four")
+              ))
+        }
+        .withTitle("Layered Plot")
+
+      plot.toJson should be(
+        """|{
+           |  "$schema" : "https://vega.github.io/schema/vega-lite/v2.json",
+           |  "layer" : [
+           |    {
+           |      "data" : {
+           |        "url" : "data/us-10m.json",
+           |        "format" : {
+           |          "type" : "topojson",
+           |          "feature" : "states"
+           |        }
+           |      },
+           |      "projection" : {
+           |        "type" : "albersUsa"
+           |      },
+           |      "mark" : {
+           |        "type" : "geoshape",
+           |        "fill" : "lightgray",
+           |        "stroke" : "white"
+           |      }
+           |    },
+           |    {
+           |      "projection" : {
+           |        "type" : "albersUsa"
+           |      },
+           |      "mark" : "circle",
+           |      "encoding" : {
+           |        "longitude" : {
+           |          "field" : "longitude",
+           |          "type" : "quantitative"
+           |        },
+           |        "latitude" : {
+           |          "field" : "latitude",
+           |          "type" : "quantitative"
+           |        },
+           |        "size" : {
+           |          "value" : 10
+           |        },
+           |        "color" : {
+           |          "value" : "steelblue"
+           |        }
+           |      },
+           |      "data" : {
+           |        "values" : [
+           |          {
+           |            "a" : 1,
+           |            "b" : "one"
+           |          },
+           |          {
+           |            "a" : 2,
+           |            "b" : "two"
+           |          },
+           |          {
+           |            "a" : 3,
+           |            "b" : "three"
+           |          },
+           |          {
+           |            "a" : 4,
+           |            "b" : "four"
+           |          }
+           |        ]
+           |      }
+           |    }
+           |  ],
+           |  "title" : "Layered Plot"
+           |}""".stripMargin)
+    }
+
+    it("show throw an exception if layer is not an array") {
+
+      intercept[ParsingFailure](
+        VegaLite()
+          .withField("layer", Json.fromString("test"))
+          .withLayer(_.withField("field", Json.fromString("field")))
+          .toJson
+      ).message should be("Layer field must an array type")
+
+    }
 
   }
 
