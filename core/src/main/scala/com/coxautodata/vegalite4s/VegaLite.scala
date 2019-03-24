@@ -116,7 +116,7 @@ trait SpecConstruct[T] {
     */
   def withField(field: String, value: String): T = parse(value) match {
     case Right(j) => withObjectTransformation(_.add(field, j))
-    case Left(e)  => throw e
+    case Left(e) => throw e
   }
 
   /**
