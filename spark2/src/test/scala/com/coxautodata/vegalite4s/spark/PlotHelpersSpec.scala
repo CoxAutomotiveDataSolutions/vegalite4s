@@ -243,6 +243,126 @@ class PlotHelpersSpec extends FunSpec with Matchers {
 
   }
 
+  it("Produce a histogram plot") {
+    val spark = SparkSession.builder().master("local[1]").getOrCreate()
+    import spark.implicits._
+
+    val data: DataFrame =
+      (97 to 122).map(i => TestRecord(i.toChar.toString, i)).toDF()
+
+    val plot = VegaLite()
+      .hist(data)
+
+    plot.toJson should be(
+      """|{
+         |  "$schema" : "https://vega.github.io/schema/vega-lite/v3.json",
+         |  "data" : {
+         |    "values" : [
+         |      {
+         |        "b" : 97
+         |      },
+         |      {
+         |        "b" : 98
+         |      },
+         |      {
+         |        "b" : 99
+         |      },
+         |      {
+         |        "b" : 100
+         |      },
+         |      {
+         |        "b" : 101
+         |      },
+         |      {
+         |        "b" : 102
+         |      },
+         |      {
+         |        "b" : 103
+         |      },
+         |      {
+         |        "b" : 104
+         |      },
+         |      {
+         |        "b" : 105
+         |      },
+         |      {
+         |        "b" : 106
+         |      },
+         |      {
+         |        "b" : 107
+         |      },
+         |      {
+         |        "b" : 108
+         |      },
+         |      {
+         |        "b" : 109
+         |      },
+         |      {
+         |        "b" : 110
+         |      },
+         |      {
+         |        "b" : 111
+         |      },
+         |      {
+         |        "b" : 112
+         |      },
+         |      {
+         |        "b" : 113
+         |      },
+         |      {
+         |        "b" : 114
+         |      },
+         |      {
+         |        "b" : 115
+         |      },
+         |      {
+         |        "b" : 116
+         |      },
+         |      {
+         |        "b" : 117
+         |      },
+         |      {
+         |        "b" : 118
+         |      },
+         |      {
+         |        "b" : 119
+         |      },
+         |      {
+         |        "b" : 120
+         |      },
+         |      {
+         |        "b" : 121
+         |      },
+         |      {
+         |        "b" : 122
+         |      }
+         |    ]
+         |  },
+         |  "repeat" : [
+         |    "b"
+         |  ],
+         |  "columns" : 3,
+         |  "spec" : {
+         |    "mark" : "bar",
+         |    "encoding" : {
+         |      "x" : {
+         |        "field" : {
+         |          "repeat" : "repeat"
+         |        },
+         |        "type" : "quantitative",
+         |        "bin" : {
+         |          "maxbins" : 50
+         |        }
+         |      },
+         |      "y" : {
+         |        "aggregate" : "count",
+         |        "type" : "quantitative"
+         |      }
+         |    }
+         |  }
+         |}""".stripMargin)
+  }
+
 }
 
 case class TestRecord(a: String, b: Int)
