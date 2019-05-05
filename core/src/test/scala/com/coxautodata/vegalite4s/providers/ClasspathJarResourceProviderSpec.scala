@@ -11,7 +11,7 @@ class ClasspathJarResourceProviderSpec extends FunSpec with Matchers {
   it("Load vega dependencies from the classpath") {
 
     val fromClasspath =
-      ClasspathJarResourceProvider("3").getJavascriptLibraryURLs
+      ClasspathJarResourceProvider().getJavascriptLibraryURLs
         .map(_.split(',').last)
         .map(b => new String(Base64.getDecoder.decode(b), "UTF-8"))
 

@@ -2,7 +2,7 @@ package com.coxautodata.vegalite4s.renderers
 
 import java.util.UUID
 
-import com.coxautodata.vegalite4s.VegaLite
+import com.coxautodata.vegalite4s.{SchemaConstruct, VegaLite}
 
 /**
   * Various utility functions for turning a [[VegaLite]] object
@@ -14,11 +14,11 @@ object RendererUtils {
 
   /**
     * Implicit class for generating Javascript functions to render a
-    * VegaLite plot
+    * plot
     *
-    * @param vegaLite VegaLite plot object
+    * @param plot plot object
     */
-  implicit class JavascriptGenerator(vegaLite: VegaLite) {
+  implicit class JavascriptGenerator(plot: SchemaConstruct[_]) {
 
     /**
       * Generate a Javascript script for rendering a VegaLite plot using VegaEmbed.
@@ -34,7 +34,7 @@ object RendererUtils {
     def asVegaEmbedScriptDefinition(divTag: String,
                                     includeDynamicLoader: Boolean): String =
       s"""
-         |var $specVarName = ${vegaLite.toJson};
+         |var $specVarName = ${plot.toJson};
          |""".stripMargin + (if (includeDynamicLoader) vegaDynamicLoader(divTag)
                              else vegaEmbedCall(divTag))
 
@@ -74,7 +74,7 @@ object RendererUtils {
          |
          |    }
          |};
-         |var files = ${vegaLite.getProvider.getJavascriptLibraryURLs
+         |var files = ${plot.getProvider.getJavascriptLibraryURLs
            .map('"' + _ + '"')
            .mkString("[", ", ", "]")}
          |loadScriptsThenRender(files);
@@ -92,7 +92,7 @@ object RendererUtils {
     *
     * @param vegaLite VegaLite plot object
     */
-  implicit class HTMLPageGenerator(vegaLite: VegaLite) {
+  implicit class HTMLPageGenerator(vegaLite: SchemaConstruct[_]) {
 
     private def scriptImports: String =
       vegaLite.getProvider.getJavascriptLibraryURLs
@@ -148,7 +148,7 @@ object RendererUtils {
     *
     * @param vegaLite VegaLite plot object
     */
-  implicit class HTMLEmbedGenerator(vegaLite: VegaLite) {
+  implicit class HTMLEmbedGenerator(vegaLite: SchemaConstruct[_]) {
 
     /**
       * Generate a subset of a HTML page including

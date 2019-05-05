@@ -1,6 +1,6 @@
 package com.coxautodata.vegalite4s.renderers
 
-import com.coxautodata.vegalite4s.VegaLite
+import com.coxautodata.vegalite4s.{SchemaConstruct, VegaLite}
 
 import scala.language.experimental.macros
 
@@ -16,7 +16,7 @@ object ImplicitRenderers {
     * Renderer that visualises the plot object in a Javafx WebView window
     */
   implicit object WindowRenderer extends PlotRenderer {
-    override def render(plot: VegaLite): Unit = WindowDisplay(plot).show()
+    override def render(plot: SchemaConstruct[_]): Unit = WindowDisplay(plot).show()
   }
 
   /**

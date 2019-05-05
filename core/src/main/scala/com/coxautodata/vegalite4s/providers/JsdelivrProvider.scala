@@ -10,8 +10,7 @@ package com.coxautodata.vegalite4s.providers
   */
 case class JsdelivrProvider(vegaVersion: String,
                             vegaLiteVersion: String,
-                            vegaEmbedVersion: String)
-    extends VegaLiteProvider {
+                            vegaEmbedVersion: String) extends LibraryProvider {
 
   override def getJavascriptLibraryURLs: Seq[String] =
     Seq(
@@ -20,5 +19,4 @@ case class JsdelivrProvider(vegaVersion: String,
       s"https://cdn.jsdelivr.net/npm/vega-embed@$vegaEmbedVersion"
     )
 
-  override def vegaLiteSchemaVersion: String = vegaLiteVersion
 }

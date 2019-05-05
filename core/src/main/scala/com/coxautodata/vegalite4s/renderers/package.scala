@@ -11,7 +11,7 @@ package object renderers {
       * The function used by the render object to visualise/render the plot object
       * @param plot VegaLite plot object
       */
-    def render(plot: VegaLite): Unit
+    def render(plot: SchemaConstruct[_]): Unit
   }
 
 }

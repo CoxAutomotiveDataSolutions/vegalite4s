@@ -1,9 +1,6 @@
 package com.coxautodata.vegalite4s.spark.providers
 
-import com.coxautodata.vegalite4s.providers.{
-  InputStreamProvider,
-  VegaLiteProvider
-}
+import com.coxautodata.vegalite4s.providers.{InputStreamProvider, LibraryProvider, VegaLiteProvider}
 import org.apache.hadoop.fs.Path
 import org.apache.spark.sql.SparkSession
 
@@ -15,17 +12,16 @@ import org.apache.spark.sql.SparkSession
 object HadoopFSFileProvider {
 
   def apply(sparkSession: SparkSession,
-            vegaLiteSchemaVersion: String,
             vegaPath: Path,
             vegaLitePath: Path,
-            vegaEmbedPath: Path): VegaLiteProvider = {
+            vegaEmbedPath: Path): LibraryProvider = {
 
     val streams = Seq(vegaPath, vegaLitePath, vegaEmbedPath)
       .map { p =>
         p.getFileSystem(sparkSession.sparkContext.hadoopConfiguration).open(p)
       }
 
-    new InputStreamProvider(vegaLiteSchemaVersion, streams: _*)
+    new InputStreamProvider(streams: _*)
 
   }
 

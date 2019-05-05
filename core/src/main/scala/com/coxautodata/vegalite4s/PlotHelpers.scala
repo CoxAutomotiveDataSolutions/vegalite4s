@@ -11,30 +11,6 @@ object PlotHelpers {
   implicit class VegaLiteHelpers(plot: VegaLite) {
 
     /**
-      * Add a title to the plot
-      *
-      * @param title Title to use
-      */
-    def withTitle(title: String): VegaLite =
-      plot.withField("title", Json.fromString(title))
-
-    /**
-      * Set a height value for the current plot
-      *
-      * @param h Height of the plot
-      */
-    def withHeight(h: Int): VegaLite =
-      plot.withField("height", Json.fromInt(h))
-
-    /**
-      * Set a width value for the current plot
-      *
-      * @param w Width of the plot
-      */
-    def withWidth(w: Int): VegaLite =
-      plot.withField("width", Json.fromInt(w))
-
-    /**
       * Add a new layer to the plot. Layer is appended if
       * layers already exist
       *
@@ -50,6 +26,34 @@ object PlotHelpers {
             .:+(spec(LayerSpec()).toJObject.asJson)
           o.add("layer", Json.fromValues(layer))
       }
+
+  }
+
+  implicit class SchemaConstructImplicits[T](plot: SchemaConstruct[T]) {
+
+    /**
+      * Add a title to the plot
+      *
+      * @param title Title to use
+      */
+    def withTitle(title: String): T =
+      plot.withField("title", Json.fromString(title))
+
+    /**
+      * Set a height value for the current plot
+      *
+      * @param h Height of the plot
+      */
+    def withHeight(h: Int): T =
+      plot.withField("height", Json.fromInt(h))
+
+    /**
+      * Set a width value for the current plot
+      *
+      * @param w Width of the plot
+      */
+    def withWidth(w: Int): T =
+      plot.withField("width", Json.fromInt(w))
 
   }
 

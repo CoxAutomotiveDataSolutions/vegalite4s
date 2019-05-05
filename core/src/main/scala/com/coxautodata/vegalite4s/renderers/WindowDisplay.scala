@@ -2,7 +2,7 @@ package com.coxautodata.vegalite4s.renderers
 
 import java.util.concurrent.{Callable, FutureTask}
 
-import com.coxautodata.vegalite4s.VegaLite
+import com.coxautodata.vegalite4s.{SchemaConstruct, VegaLite}
 import com.coxautodata.vegalite4s.renderers.RendererUtils.HTMLPageGenerator
 import com.sun.javafx.webkit.WebConsoleListener
 import com.typesafe.scalalogging.Logger
@@ -22,7 +22,7 @@ import scala.collection.mutable
   *
   * @param plot VegaLite plot object
   */
-case class WindowDisplay(private val plot: VegaLite) {
+case class WindowDisplay(private val plot: SchemaConstruct[_]) {
 
   /**
     * Boolean indicating whether a plot has finished loading in the WebView
@@ -44,7 +44,7 @@ case class WindowDisplay(private val plot: VegaLite) {
     * Render a plot by providing a function that generates HTML.
     * NoOp if a plot is currently being rendered
     */
-  def show(toHTML: VegaLite => String): Unit =
+  def show(toHTML: SchemaConstruct[_] => String): Unit =
     maybeStage match {
       case None =>
         init
@@ -80,7 +80,7 @@ case class WindowDisplay(private val plot: VegaLite) {
     task.get()
   }
 
-  private def createStage(toHTML: VegaLite => String): Stage = {
+  private def createStage(toHTML: SchemaConstruct[_] => String): Stage = {
 
     // Log errors
     WebConsoleListener.setDefaultListener(new WebConsoleListener {

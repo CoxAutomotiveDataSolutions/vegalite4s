@@ -1,6 +1,6 @@
 package com.coxautodata.vegalite4s.renderers
 
-import com.coxautodata.vegalite4s.VegaLite
+import com.coxautodata.vegalite4s.{SchemaConstruct, VegaLite}
 import com.coxautodata.vegalite4s.renderers.RendererUtils._
 
 /**
@@ -15,7 +15,7 @@ import com.coxautodata.vegalite4s.renderers.RendererUtils._
 case class HTMLRenderer(render: String => Unit, fullHTMLPage: Boolean)
     extends PlotRenderer {
 
-  override def render(plot: VegaLite): Unit =
+  override def render(plot: SchemaConstruct[_]): Unit =
     if (fullHTMLPage) render(plot.htmlPage)
     else render(plot.htmlEmbed)
 

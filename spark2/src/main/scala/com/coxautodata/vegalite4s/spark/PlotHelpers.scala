@@ -2,7 +2,6 @@ package com.coxautodata.vegalite4s.spark
 
 import com.coxautodata.vegalite4s.PlotHelpers._
 import com.coxautodata.vegalite4s.{SpecConstruct, VegaLite}
-import org.apache.spark.sql.types.DataTypes.{DoubleType, FloatType, IntegerType, LongType, ShortType}
 import org.apache.spark.sql.types.{NumericType, StructField, StructType}
 import org.apache.spark.sql.{Dataset, SparkSession}
 
@@ -123,7 +122,6 @@ object PlotHelpers {
   }
 
   private def filterNumericColumns(schema: StructType): Seq[StructField] = {
-    val numericTypes = Seq(IntegerType, DoubleType, FloatType, LongType, ShortType)
     schema.fields.filter(_.dataType.isInstanceOf[NumericType])
   }
 

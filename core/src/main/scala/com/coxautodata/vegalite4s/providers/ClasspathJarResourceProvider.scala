@@ -24,7 +24,7 @@ import scala.collection.immutable.Stream.cons
   */
 object ClasspathJarResourceProvider {
 
-  def apply(vegaLiteSchemaVersion: String): VegaLiteProvider = {
+  def apply(): LibraryProvider = {
     val streams = findResourcesByFilename(
       List("vega.min.js", "vega-lite.min.js", "vega-embed.min.js")
     )
@@ -39,7 +39,7 @@ object ClasspathJarResourceProvider {
         )
       )
 
-    new InputStreamProvider(vegaLiteSchemaVersion, streams.collect {
+    new InputStreamProvider(streams.collect {
       case Right((_, in)) => in
     }: _*)
 

@@ -1,11 +1,7 @@
 package com.coxautodata.vegalite4s.renderers
 
-import com.coxautodata.vegalite4s.VegaLite
-import com.coxautodata.vegalite4s.providers.{
-  ClasspathJarResourceProvider,
-  InputStreamProvider,
-  JsdelivrProvider
-}
+import com.coxautodata.vegalite4s.{SchemaConstruct, VegaLite}
+import com.coxautodata.vegalite4s.providers.{ClasspathJarResourceProvider, InputStreamProvider, JsdelivrProvider, VegaLiteProvider}
 import com.coxautodata.vegalite4s.renderers.RendererUtils.HTMLEmbedGenerator
 import org.scalatest.{FunSpec, Matchers}
 
@@ -31,7 +27,7 @@ class WindowDisplaySpec extends FunSpec with Matchers {
 
     it("render a vega-lite plot with no errors") {
 
-      val window = VegaLite(JsdelivrProvider("3", "2", "3"))
+      val window = VegaLite(VegaLiteProvider(JsdelivrProvider("3", "2", "3"), "2"))
         .withObject(
           """
             |{
@@ -68,7 +64,7 @@ class WindowDisplaySpec extends FunSpec with Matchers {
 
     it("render a vega-lite plot using an InputStream provider with no errors") {
 
-      val window = VegaLite(ClasspathJarResourceProvider("3"))
+      val window = VegaLite(VegaLiteProvider(ClasspathJarResourceProvider(), "3"))
         .withObject(
           """
             |{
@@ -106,7 +102,7 @@ class WindowDisplaySpec extends FunSpec with Matchers {
 
   describe("WindowDisplay embedded") {
 
-    def toHTML(plot: VegaLite): String = {
+    def toHTML(plot: SchemaConstruct[_]): String = {
       ("""
          |<!DOCTYPE html>
          |<html>
@@ -126,7 +122,7 @@ class WindowDisplaySpec extends FunSpec with Matchers {
 
     it("render a vega-lite plot with no errors using an embedded document") {
 
-      val window = VegaLite(JsdelivrProvider("3", "2", "3"))
+      val window = VegaLite(VegaLiteProvider(JsdelivrProvider("3", "2", "3"), "2"))
         .withObject(
           """
             |{
@@ -165,7 +161,7 @@ class WindowDisplaySpec extends FunSpec with Matchers {
       "render a vega-lite plot using an InputStream provider with no errors using an embedded document"
     ) {
 
-      val window = VegaLite(ClasspathJarResourceProvider("3"))
+      val window = VegaLite(VegaLiteProvider(ClasspathJarResourceProvider(), "3"))
         .withObject(
           """
             |{
@@ -205,7 +201,7 @@ class WindowDisplaySpec extends FunSpec with Matchers {
 
     it("render a vega-lite plot with errors") {
 
-      val window = VegaLite(new InputStreamProvider("3"))
+      val window = VegaLite(VegaLiteProvider(new InputStreamProvider(), "3"))
         .withObject(
           """
             |{

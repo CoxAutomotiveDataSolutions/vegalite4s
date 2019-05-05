@@ -16,7 +16,6 @@ class InputStreamProviderSpec extends FunSpec with Matchers {
       """.stripMargin
 
     val url = new InputStreamProvider(
-      "3",
       new ByteArrayInputStream(testString.getBytes())
     ).getJavascriptLibraryURLs
 

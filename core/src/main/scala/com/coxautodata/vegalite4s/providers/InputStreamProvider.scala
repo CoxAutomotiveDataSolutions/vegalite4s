@@ -14,12 +14,10 @@ import scala.io.Source
   * or [[LocalFileProvider]]) allows VegaLite plots to be rendered in an environment
   * without direct access to CDNs.
   *
-  * @param vegaLiteSchemaVersion The version of VegaLite to use in the schema document
   * @param libraryStreams A list of InputStreams to include as Javascript libraries
   */
-class InputStreamProvider(val vegaLiteSchemaVersion: String,
-                          libraryStreams: InputStream*)
-    extends VegaLiteProvider {
+class InputStreamProvider(libraryStreams: InputStream*)
+    extends LibraryProvider {
 
   def streamToJavascriptEmbed(in: InputStream): String = {
     val script = Source.fromInputStream(in, "UTF-8").mkString.getBytes("UTF-8")

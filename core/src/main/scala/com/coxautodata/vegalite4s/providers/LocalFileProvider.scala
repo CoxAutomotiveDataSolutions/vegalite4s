@@ -12,9 +12,8 @@ object LocalFileProvider {
   def apply(vegaLiteSchemaVersion: String,
             vegaPath: String,
             vegaLitePath: String,
-            vegaEmbedPath: String): VegaLiteProvider =
+            vegaEmbedPath: String): LibraryProvider =
     new InputStreamProvider(
-      vegaLiteSchemaVersion,
       new FileInputStream(vegaPath),
       new FileInputStream(vegaLitePath),
       new FileInputStream(vegaEmbedPath)

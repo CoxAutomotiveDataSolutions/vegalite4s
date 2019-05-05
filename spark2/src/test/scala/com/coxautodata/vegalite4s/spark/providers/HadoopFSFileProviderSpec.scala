@@ -29,7 +29,7 @@ class HadoopFSFileProviderSpec extends FunSpec with Matchers {
           new Path(s"file://${tmp.toUri.getPath}")
         }
       assert(paths.length == 3)
-      HadoopFSFileProvider(spark, "2", paths(0), paths(1), paths(2))
+      HadoopFSFileProvider(spark, paths(0), paths(1), paths(2))
     }.getJavascriptLibraryURLs
       .map(_.split(',').last)
       .map(b => new String(Base64.getDecoder.decode(b), "UTF-8"))

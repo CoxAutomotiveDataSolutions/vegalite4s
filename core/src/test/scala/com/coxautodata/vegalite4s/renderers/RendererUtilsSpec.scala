@@ -1,7 +1,7 @@
 package com.coxautodata.vegalite4s.renderers
 
 import com.coxautodata.vegalite4s.VegaLite
-import com.coxautodata.vegalite4s.providers.JsdelivrProvider
+import com.coxautodata.vegalite4s.providers.{JsdelivrProvider, VegaLiteProvider}
 import org.scalatest.{FunSpec, Matchers}
 
 class RendererUtilsSpec extends FunSpec with Matchers {
@@ -11,7 +11,7 @@ class RendererUtilsSpec extends FunSpec with Matchers {
     it("create a simple VegaEmbed script") {
       import RendererUtils.JavascriptGenerator
 
-      VegaLite(JsdelivrProvider("3", "2", "3"))
+      VegaLite(VegaLiteProvider(JsdelivrProvider("3", "2", "3"), "2"))
         .asVegaEmbedScriptDefinition("test", includeDynamicLoader = false)
         .trim should be(
         """
@@ -25,7 +25,7 @@ class RendererUtilsSpec extends FunSpec with Matchers {
     it("create a VegaEmbed script with a dynamic loader") {
       import RendererUtils.JavascriptGenerator
 
-      VegaLite(JsdelivrProvider("3", "2", "3"))
+      VegaLite(VegaLiteProvider(JsdelivrProvider("3", "2", "3"), "2"))
         .asVegaEmbedScriptDefinition("test", includeDynamicLoader = true)
         .trim should be(
         """
@@ -74,7 +74,7 @@ class RendererUtilsSpec extends FunSpec with Matchers {
     it("create a full page HTML document with a given div") {
       import RendererUtils.HTMLPageGenerator
 
-      VegaLite(JsdelivrProvider("3", "2", "3"))
+      VegaLite(VegaLiteProvider(JsdelivrProvider("3", "2", "3"), "2"))
         .htmlPage("test")
         .trim should be(
         """
@@ -106,8 +106,8 @@ class RendererUtilsSpec extends FunSpec with Matchers {
     ) {
       import RendererUtils.HTMLPageGenerator
 
-      (VegaLite(JsdelivrProvider("3", "2", "3")).htmlPage("test")
-        should be(VegaLite(JsdelivrProvider("3", "2", "3")).htmlPage("test")))
+      (VegaLite(VegaLiteProvider(JsdelivrProvider("3", "2", "3"), "2")).htmlPage("test")
+        should be(VegaLite(VegaLiteProvider(JsdelivrProvider("3", "2", "3"), "2")).htmlPage("test")))
 
     }
 
@@ -117,9 +117,9 @@ class RendererUtilsSpec extends FunSpec with Matchers {
       import RendererUtils.HTMLPageGenerator
 
       (
-        VegaLite(JsdelivrProvider("3", "2", "3")).htmlPage
+        VegaLite(VegaLiteProvider(JsdelivrProvider("3", "2", "3"), "2")).htmlPage
           should not be
-          VegaLite(JsdelivrProvider("3", "2", "3")).htmlPage
+          VegaLite(VegaLiteProvider(JsdelivrProvider("3", "2", "3"), "2")).htmlPage
       )
 
     }
@@ -131,7 +131,7 @@ class RendererUtilsSpec extends FunSpec with Matchers {
     it("create a section of a HTML document with a given div") {
       import RendererUtils.HTMLEmbedGenerator
 
-      VegaLite(JsdelivrProvider("3", "2", "3"))
+      VegaLite(VegaLiteProvider(JsdelivrProvider("3", "2", "3"), "2"))
         .htmlEmbed("test")
         .trim should be(
         """
@@ -184,8 +184,8 @@ class RendererUtilsSpec extends FunSpec with Matchers {
     ) {
       import RendererUtils.HTMLEmbedGenerator
 
-      (VegaLite(JsdelivrProvider("3", "2", "3")).htmlEmbed("test")
-        should be(VegaLite(JsdelivrProvider("3", "2", "3")).htmlEmbed("test")))
+      (VegaLite(VegaLiteProvider(JsdelivrProvider("3", "2", "3"), "2")).htmlEmbed("test")
+        should be(VegaLite(VegaLiteProvider(JsdelivrProvider("3", "2", "3"), "2")).htmlEmbed("test")))
 
     }
 
@@ -195,9 +195,9 @@ class RendererUtilsSpec extends FunSpec with Matchers {
       import RendererUtils.HTMLEmbedGenerator
 
       (
-        VegaLite(JsdelivrProvider("3", "2", "3")).htmlEmbed
+        VegaLite(VegaLiteProvider(JsdelivrProvider("3", "2", "3"), "2")).htmlEmbed
           should not be
-          VegaLite(JsdelivrProvider("3", "2", "3")).htmlEmbed
+          VegaLite(VegaLiteProvider(JsdelivrProvider("3", "2", "3"), "2")).htmlEmbed
       )
 
     }
