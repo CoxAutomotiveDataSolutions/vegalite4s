@@ -30,7 +30,7 @@ class PlotHelpersSpec extends FunSpec with Matchers {
         """.stripMargin)
       .withData(data)
 
-    plot.toJson should be(
+    plot.toJson(_.spaces2) should be(
       """{
         |  "$schema" : "https://vega.github.io/schema/vega-lite/v3.json",
         |  "description" : "A simple bar chart with embedded data.",
@@ -194,7 +194,7 @@ class PlotHelpersSpec extends FunSpec with Matchers {
         """.stripMargin)
       .withData(data)
 
-    plot.toJson should be(
+    plot.toJson(_.spaces2) should be(
       """{
         |  "$schema" : "https://vega.github.io/schema/vega-lite/v3.json",
         |  "description" : "A simple bar chart with embedded data.",
@@ -253,7 +253,7 @@ class PlotHelpersSpec extends FunSpec with Matchers {
     val plot = VegaLite()
       .hist(data)
 
-    plot.toJson should be(
+    plot.toJson(_.spaces2) should be(
       """|{
          |  "$schema" : "https://vega.github.io/schema/vega-lite/v3.json",
          |  "data" : {
@@ -373,7 +373,7 @@ class PlotHelpersSpec extends FunSpec with Matchers {
     val plot = VegaLite()
       .scatter(data)
 
-    plot.toJson should be(
+    plot.toJson(_.spaces2) should be(
       """{
         |  "$schema" : "https://vega.github.io/schema/vega-lite/v3.json",
         |  "data" : {

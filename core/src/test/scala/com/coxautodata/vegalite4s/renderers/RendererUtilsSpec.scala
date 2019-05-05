@@ -15,9 +15,7 @@ class RendererUtilsSpec extends FunSpec with Matchers {
         .asVegaEmbedScriptDefinition("test", includeDynamicLoader = false)
         .trim should be(
         """
-          |var vlSpec = {
-          |  "$schema" : "https://vega.github.io/schema/vega-lite/v2.json"
-          |};
+          |var vlSpec = {"$schema":"https://vega.github.io/schema/vega-lite/v2.json"};
           |vegaEmbed('#test', vlSpec);
         """.stripMargin.trim
       )
@@ -31,9 +29,7 @@ class RendererUtilsSpec extends FunSpec with Matchers {
         .asVegaEmbedScriptDefinition("test", includeDynamicLoader = true)
         .trim should be(
         """
-          |var vlSpec = {
-          |  "$schema" : "https://vega.github.io/schema/vega-lite/v2.json"
-          |};
+          |var vlSpec = {"$schema":"https://vega.github.io/schema/vega-lite/v2.json"};
           |
           |function isScriptAlreadyIncluded(src) {
           |    var scripts = document.getElementsByTagName("script");
@@ -95,9 +91,7 @@ class RendererUtilsSpec extends FunSpec with Matchers {
           |
           |    <script type="text/javascript">
           |
-          |var vlSpec = {
-          |  "$schema" : "https://vega.github.io/schema/vega-lite/v2.json"
-          |};
+          |var vlSpec = {"$schema":"https://vega.github.io/schema/vega-lite/v2.json"};
           |vegaEmbed('#test', vlSpec);
           |    </script>
           |  </body>
@@ -145,9 +139,7 @@ class RendererUtilsSpec extends FunSpec with Matchers {
           |
           |<script type="text/javascript">
           |
-          |var vlSpec = {
-          |  "$schema" : "https://vega.github.io/schema/vega-lite/v2.json"
-          |};
+          |var vlSpec = {"$schema":"https://vega.github.io/schema/vega-lite/v2.json"};
           |
           |function isScriptAlreadyIncluded(src) {
           |    var scripts = document.getElementsByTagName("script");

@@ -35,7 +35,12 @@ class VegaLite(prov: VegaLiteProvider,
   /**
     * Return the current plot definition as a JSON string
     */
-  def toJson: String = Json.fromJsonObject(toJObject).spaces2
+  def toJson(toString: Json => String): String = toString(Json.fromJsonObject(toJObject))
+
+  /**
+    * Return the current plot definition as a JSON string
+    */
+  def toJson: String = toJson(_.noSpaces)
 
   /**
     * Get the provider used by this plot

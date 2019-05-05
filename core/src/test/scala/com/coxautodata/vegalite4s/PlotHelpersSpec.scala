@@ -24,7 +24,7 @@ class PlotHelpersSpec extends FunSpec with Matchers {
         """.stripMargin)
       .withTitle("example")
 
-    plot.toJson should be(
+    plot.toJson(_.spaces2) should be(
       """{
         |  "$schema" : "https://vega.github.io/schema/vega-lite/v3.json",
         |  "description" : "A simple bar chart with embedded data.",
@@ -66,7 +66,7 @@ class PlotHelpersSpec extends FunSpec with Matchers {
           Map("a" -> 4, "b" -> "four")
         ))
 
-    plot.toJson should be(
+    plot.toJson(_.spaces2) should be(
       """{
         |  "$schema" : "https://vega.github.io/schema/vega-lite/v3.json",
         |  "description" : "A simple bar chart with embedded data.",
@@ -121,7 +121,7 @@ class PlotHelpersSpec extends FunSpec with Matchers {
         """.stripMargin)
       .withWidth(200)
 
-    plot.toJson should be(
+    plot.toJson(_.spaces2) should be(
       """{
         |  "$schema" : "https://vega.github.io/schema/vega-lite/v3.json",
         |  "description" : "A simple bar chart with embedded data.",
@@ -157,7 +157,7 @@ class PlotHelpersSpec extends FunSpec with Matchers {
         """.stripMargin)
       .withHeight(200)
 
-    plot.toJson should be(
+    plot.toJson(_.spaces2) should be(
       """{
         |  "$schema" : "https://vega.github.io/schema/vega-lite/v3.json",
         |  "description" : "A simple bar chart with embedded data.",
@@ -238,7 +238,7 @@ class PlotHelpersSpec extends FunSpec with Matchers {
         }
         .withTitle("Layered Plot")
 
-      plot.toJson should be(
+      plot.toJson(_.spaces2) should be(
         """|{
            |  "$schema" : "https://vega.github.io/schema/vega-lite/v3.json",
            |  "layer" : [

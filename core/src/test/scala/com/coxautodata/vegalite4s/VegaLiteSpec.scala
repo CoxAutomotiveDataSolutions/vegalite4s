@@ -13,7 +13,7 @@ class VegaLiteSpec extends FunSpec with Matchers {
         .withObject("""{ "a": "a" }""")
         .withObject(JsonObject("b" -> Json.fromString("b")))
 
-      plot.toJson should be(
+      plot.toJson(_.spaces2) should be(
         """{
           |  "$schema" : "https://vega.github.io/schema/vega-lite/v2.json",
           |  "a" : "a",
@@ -30,7 +30,7 @@ class VegaLiteSpec extends FunSpec with Matchers {
         .withObject(JsonObject("b" -> Json.fromString("b")))
         .withObject("""{ "b": "bb" }""")
 
-      plot.toJson should be(
+      plot.toJson(_.spaces2) should be(
         """{
           |  "$schema" : "https://vega.github.io/schema/vega-lite/v2.json",
           |  "a" : "aa",
@@ -48,7 +48,7 @@ class VegaLiteSpec extends FunSpec with Matchers {
         .withField("a", "[ \"a\"]")
         .withField("b", Json.fromString("b"))
 
-      plot.toJson should be(
+      plot.toJson(_.spaces2) should be(
         """{
           |  "$schema" : "https://vega.github.io/schema/vega-lite/v2.json",
           |  "a" : [
@@ -67,7 +67,7 @@ class VegaLiteSpec extends FunSpec with Matchers {
         .withField("a", Json.fromString("aa"))
         .withField("b", "[ \"bb\"]")
 
-      plot.toJson should be(
+      plot.toJson(_.spaces2) should be(
         """{
           |  "$schema" : "https://vega.github.io/schema/vega-lite/v2.json",
           |  "a" : "aa",
