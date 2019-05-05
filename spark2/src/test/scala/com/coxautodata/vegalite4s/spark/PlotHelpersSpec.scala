@@ -363,9 +363,162 @@ class PlotHelpersSpec extends FunSpec with Matchers {
          |}""".stripMargin)
   }
 
+  it("Produce a scatter plot") {
+    val spark = SparkSession.builder().master("local[1]").getOrCreate()
+    import spark.implicits._
+
+    val data: DataFrame =
+      (97 to 122).map(i => TestScatterRecord(i, i*i)).toDF()
+
+    val plot = VegaLite()
+      .scatter(data)
+
+    plot.toJson should be(
+      """{
+        |  "$schema" : "https://vega.github.io/schema/vega-lite/v3.json",
+        |  "data" : {
+        |    "values" : [
+        |      {
+        |        "a" : 97,
+        |        "b" : 9409
+        |      },
+        |      {
+        |        "a" : 98,
+        |        "b" : 9604
+        |      },
+        |      {
+        |        "a" : 99,
+        |        "b" : 9801
+        |      },
+        |      {
+        |        "a" : 100,
+        |        "b" : 10000
+        |      },
+        |      {
+        |        "a" : 101,
+        |        "b" : 10201
+        |      },
+        |      {
+        |        "a" : 102,
+        |        "b" : 10404
+        |      },
+        |      {
+        |        "a" : 103,
+        |        "b" : 10609
+        |      },
+        |      {
+        |        "a" : 104,
+        |        "b" : 10816
+        |      },
+        |      {
+        |        "a" : 105,
+        |        "b" : 11025
+        |      },
+        |      {
+        |        "a" : 106,
+        |        "b" : 11236
+        |      },
+        |      {
+        |        "a" : 107,
+        |        "b" : 11449
+        |      },
+        |      {
+        |        "a" : 108,
+        |        "b" : 11664
+        |      },
+        |      {
+        |        "a" : 109,
+        |        "b" : 11881
+        |      },
+        |      {
+        |        "a" : 110,
+        |        "b" : 12100
+        |      },
+        |      {
+        |        "a" : 111,
+        |        "b" : 12321
+        |      },
+        |      {
+        |        "a" : 112,
+        |        "b" : 12544
+        |      },
+        |      {
+        |        "a" : 113,
+        |        "b" : 12769
+        |      },
+        |      {
+        |        "a" : 114,
+        |        "b" : 12996
+        |      },
+        |      {
+        |        "a" : 115,
+        |        "b" : 13225
+        |      },
+        |      {
+        |        "a" : 116,
+        |        "b" : 13456
+        |      },
+        |      {
+        |        "a" : 117,
+        |        "b" : 13689
+        |      },
+        |      {
+        |        "a" : 118,
+        |        "b" : 13924
+        |      },
+        |      {
+        |        "a" : 119,
+        |        "b" : 14161
+        |      },
+        |      {
+        |        "a" : 120,
+        |        "b" : 14400
+        |      },
+        |      {
+        |        "a" : 121,
+        |        "b" : 14641
+        |      },
+        |      {
+        |        "a" : 122,
+        |        "b" : 14884
+        |      }
+        |    ]
+        |  },
+        |  "repeat" : {
+        |    "row" : [
+        |      "a",
+        |      "b"
+        |    ],
+        |    "column" : [
+        |      "a",
+        |      "b"
+        |    ]
+        |  },
+        |  "spec" : {
+        |    "mark" : "point",
+        |    "encoding" : {
+        |      "x" : {
+        |        "field" : {
+        |          "repeat" : "column"
+        |        },
+        |        "type" : "quantitative"
+        |      },
+        |      "y" : {
+        |        "field" : {
+        |          "repeat" : "row"
+        |        },
+        |        "type" : "quantitative"
+        |      }
+        |    }
+        |  }
+        |}""".stripMargin)
+  }
+
 }
 
 case class TestRecord(a: String, b: Int)
+
+case class TestScatterRecord(a: Int, b: Int)
 
 case class TestDatatypesRecord(stringF: Option[String],
                                integerF: Option[Int],
