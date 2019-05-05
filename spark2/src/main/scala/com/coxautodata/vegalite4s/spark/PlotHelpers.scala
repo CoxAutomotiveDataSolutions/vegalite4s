@@ -52,8 +52,8 @@ object PlotHelpers {
       * correlations in a plot.
       * All non-numerical columns will be ignored
       *
-      * @param ds                Dataset to visualise
-      * @param includeColumns    Columns from the Dataset to use. Uses all by default or when set to empty
+      * @param ds             Dataset to visualise
+      * @param includeColumns Columns from the Dataset to use. Uses all by default or when set to empty
       * @return
       */
     def scatter(ds: Dataset[_], includeColumns: Seq[String] = Seq.empty): VegaLite = {
@@ -93,18 +93,21 @@ object PlotHelpers {
       * Spark DAG execution is not triggered until the plot is rendered.
       * Dataset is sampled if the record size is over the provided record limit.
       *
-      * @param ds    Dataset to add
+      * @param ds Dataset to add
       */
     def withData(ds: Dataset[_]): T = {
       def toSeqMap: Seq[Map[String, Any]] = {
-        val limit = getCollectLimit(ds.sparkSession)
-        val count = ds.count()
-        val arr =
-          if (count <= limit) ds.toDF().collect()
-          else
-            ds.toDF()
-              .sample(withReplacement = false, limit / count.toDouble)
-              .collect()
+        val arr = getCollectLimit(ds.sparkSession) match {
+          case Some(limit) =>
+            val count = ds.count()
+            if (count <= limit) ds.toDF().collect()
+            else
+              ds.toDF()
+                .sample(withReplacement = false, limit / count.toDouble)
+                .collect()
+          case None => ds.toDF().collect()
+        }
+
         arr.toSeq.map(r => r.schema.toList.map(_.name).zip(r.toSeq).toMap)
       }
 
@@ -113,12 +116,12 @@ object PlotHelpers {
 
   }
 
-  private def getCollectLimit(spark: SparkSession): Long = {
+  private def getCollectLimit(spark: SparkSession): Option[Long] = {
     val limitEnabled = spark.conf.getOption(SPARK_DATASET_LIMIT).map(_.toBoolean).getOrElse(SPARK_DATASET_LIMIT_DEFAULT)
     if (limitEnabled) {
-      spark.conf.getOption(SPARK_DATASET_MAX_RECORDS).map(_.toLong).getOrElse(SPARK_DATASET_MAX_RECORDS_DEFAULT)
+      Some(spark.conf.getOption(SPARK_DATASET_MAX_RECORDS).map(_.toLong).getOrElse(SPARK_DATASET_MAX_RECORDS_DEFAULT))
     }
-    else -1
+    else None
   }
 
   private def filterNumericColumns(schema: StructType): Seq[StructField] = {
