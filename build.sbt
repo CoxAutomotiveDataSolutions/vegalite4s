@@ -9,13 +9,12 @@ import xerial.sbt.Sonatype._
 val circeV = "0.11.1"
 val scalafxV = "8.0.144-R12"
 val scalatestV = "3.0.4"
-val spark2V = "2.4.0"
 val vegaliteV = "2.6.0"
 val vegaV = "3.3.1"
 val vegaembedV = "3.29.1"
 val scalaloggingV = "3.9.0"
 val slf4jV = "1.7.16"
-val sparkV = "2.4.0"
+val sparkV = "2.4.3"
 
 lazy val global = project
   .in(file("."))

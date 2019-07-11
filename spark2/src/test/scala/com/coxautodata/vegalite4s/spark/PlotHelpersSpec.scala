@@ -3,6 +3,7 @@ package com.coxautodata.vegalite4s.spark
 import java.sql.{Date, Timestamp}
 
 import com.coxautodata.vegalite4s.VegaLite
+import com.coxautodata.arrow._
 import com.coxautodata.vegalite4s.spark.PlotHelpers._
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.scalatest.{FunSpec, Matchers}
@@ -512,6 +513,22 @@ class PlotHelpersSpec extends FunSpec with Matchers {
         |    }
         |  }
         |}""".stripMargin)
+  }
+
+
+  it("arrow hack") {
+    val spark = SparkSession.builder().master("local[1]").getOrCreate()
+    import spark.implicits._
+
+    val data: DataFrame =
+      (97 to 122).map(i => TestRecord(i.toChar.toString, i)).toDF()
+
+
+    data.write.mode("overwrite").arrow("/tmp/arrowout")
+
+
+    spark.stop()
+
   }
 
 }
