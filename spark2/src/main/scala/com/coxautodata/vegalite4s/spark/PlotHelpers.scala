@@ -108,7 +108,7 @@ object PlotHelpers {
         .getOrElse(withEmbeddedData(ds))
     }
 
-    private def withArrowData(ds: Dataset[_])(staticStore: StaticFileStore): T = {
+    private [spark] def withArrowData(ds: Dataset[_])(staticStore: StaticFileStore): T = {
 
       lazy val url = {
         val outputPath = staticStore.generateOutputPath()

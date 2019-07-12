@@ -1,10 +1,14 @@
 package com.coxautodata.vegalite4s.spark
 
+import java.io.File
+import java.nio.file.Files
 import java.sql.{Date, Timestamp}
 
 import com.coxautodata.vegalite4s.VegaLite
-import com.coxautodata.arrow._
 import com.coxautodata.vegalite4s.spark.PlotHelpers._
+import com.coxautodata.vegalite4s.spark.filestore.StaticFileStore
+import org.apache.commons.io.FileUtils
+import org.apache.hadoop.fs.Path
 import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.scalatest.{FunSpec, Matchers}
 
@@ -369,7 +373,7 @@ class PlotHelpersSpec extends FunSpec with Matchers {
     import spark.implicits._
 
     val data: DataFrame =
-      (97 to 122).map(i => TestScatterRecord(i, i*i)).toDF()
+      (97 to 122).map(i => TestScatterRecord(i, i * i)).toDF()
 
     val plot = VegaLite()
       .scatter(data)
@@ -516,18 +520,41 @@ class PlotHelpersSpec extends FunSpec with Matchers {
   }
 
 
-  it("arrow hack") {
+  it("withArrowData") {
+    val temp = Files.createTempDirectory("test_output")
     val spark = SparkSession.builder().master("local[1]").getOrCreate()
     import spark.implicits._
+
+    val testStore = new StaticFileStore {
+      override def staticStoreExists(sparkSession: SparkSession): Boolean = true
+
+      override def generateOutputPath(): Path = new Path(temp.toString, "arrowout")
+
+      override def getStaticURL(arrowFile: Path): String = arrowFile.toString
+    }
 
     val data: DataFrame =
       (97 to 122).map(i => TestRecord(i.toChar.toString, i)).toDF()
 
 
-    data.write.mode("overwrite").arrow("/tmp/arrowout")
+    VegaLite()
+      .withArrowData(data)(testStore)
+      .toJson(_.spaces2) should be(
+      s"""{
+         |  "$$schema" : "https://vega.github.io/schema/vega-lite/v3.json",
+         |  "data" : {
+         |    "url" : "file:${new File(testStore.generateOutputPath().toString).listFiles().map(_.toString).filter(_.endsWith(".arrow")).mkString}",
+         |    "format" : {
+         |      "type" : "arrow"
+         |    }
+         |  }
+         |}""".stripMargin
+    )
 
 
     spark.stop()
+
+    FileUtils.deleteDirectory(temp.toFile)
 
   }
 
