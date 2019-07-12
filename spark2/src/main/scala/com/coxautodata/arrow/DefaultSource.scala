@@ -4,10 +4,9 @@ import org.apache.hadoop.fs.FileStatus
 import org.apache.hadoop.mapreduce.Job
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.execution.datasources.{FileFormat, OutputWriterFactory}
-import org.apache.spark.sql.sources.DataSourceRegister
 import org.apache.spark.sql.types.StructType
 
-private[arrow] class DefaultSource extends FileFormat with DataSourceRegister {
+private[arrow] class DefaultSource extends FileFormat {
   override def inferSchema(sparkSession: SparkSession, options: Map[String, String], files: Seq[FileStatus]): Option[StructType] =
     throw new UnsupportedOperationException(s"Read not yet supported")
 
@@ -20,5 +19,4 @@ private[arrow] class DefaultSource extends FileFormat with DataSourceRegister {
 
   }
 
-  override def shortName(): String = "arrow"
 }

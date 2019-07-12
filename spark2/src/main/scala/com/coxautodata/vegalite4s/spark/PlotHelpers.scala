@@ -1,7 +1,11 @@
 package com.coxautodata.vegalite4s.spark
 
+import com.coxautodata.arrow._
 import com.coxautodata.vegalite4s.PlotHelpers._
+import com.coxautodata.vegalite4s.spark.filestore.{DatabricksFileStore, StaticFileStore}
 import com.coxautodata.vegalite4s.{SpecConstruct, VegaLite}
+import io.circe.{Json, JsonObject}
+import org.apache.hadoop.fs.Path
 import org.apache.spark.sql.types.{NumericType, StructField, StructType}
 import org.apache.spark.sql.{Dataset, SparkSession}
 
@@ -96,6 +100,46 @@ object PlotHelpers {
       * @param ds Dataset to add
       */
     def withData(ds: Dataset[_]): T = {
+      val tryArrow = ds.sparkSession.conf.getOption(SPARK_ATTEMPT_TO_STORE_AS_STATIC_ARROW_FILE).map(_.toBoolean).getOrElse(SPARK_ATTEMPT_TO_STORE_AS_STATIC_ARROW_FILE_DEFAULT)
+      val candidates = if (tryArrow) List(DatabricksFileStore) else List.empty
+      candidates
+        .find(_.staticStoreExists(ds.sparkSession))
+        .map(withArrowData(ds))
+        .getOrElse(withEmbeddedData(ds))
+    }
+
+    private def withArrowData(ds: Dataset[_])(staticStore: StaticFileStore): T = {
+
+      lazy val url = {
+        val outputPath = staticStore.generateOutputPath()
+
+        ds.coalesce(1).write.arrow(outputPath.toString)
+
+        val arrowFiles = outputPath
+          .getFileSystem(ds.sparkSession.sparkContext.hadoopConfiguration)
+          .globStatus(new Path(outputPath, "*.arrow"))
+          .collect { case f if f.isFile => f.getPath }
+
+        arrowFiles.toList match {
+          case List(one) => staticStore.getStaticURL(one)
+          case Nil => throw new RuntimeException(s"No arrow files found in [$outputPath]")
+          case _ => throw new RuntimeException(s"Multiple arrow files found in [$outputPath]")
+        }
+      }
+
+      spec.withField(
+        "data",
+        Json.fromJsonObject(
+          JsonObject(
+            "url" -> Json.fromString(url),
+            "format" -> Json.fromJsonObject(JsonObject("type" -> Json.fromString("arrow")))
+          )
+        )
+      )
+
+    }
+
+    private def withEmbeddedData(ds: Dataset[_]): T = {
       def toSeqMap: Seq[Map[String, Any]] = {
         val arr = getCollectLimit(ds.sparkSession) match {
           case Some(limit) =>
@@ -127,5 +171,6 @@ object PlotHelpers {
   private def filterNumericColumns(schema: StructType): Seq[StructField] = {
     schema.fields.filter(_.dataType.isInstanceOf[NumericType])
   }
+
 
 }
