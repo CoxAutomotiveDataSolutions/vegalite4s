@@ -1,6 +1,6 @@
 language: scala
 jdk:
-  - openjdk8
+  - oraclejdk9
 
 sudo: required
 
@@ -41,4 +41,3 @@ before_cache:
 before_install:
   - git fetch --tags
   - "export DISPLAY=:99.0"
-  - sudo apt-get install openjfx
