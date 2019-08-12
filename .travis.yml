@@ -18,6 +18,9 @@ jobs:
         - sbt +clean +package
         - sbt ci-release
 
+services:
+  - xvfb
+
 cache:
   directories:
     - $HOME/.sbt/1.0/dependency
@@ -36,5 +39,4 @@ before_cache:
 before_install:
   - git fetch --tags
   - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
   - sleep 3
