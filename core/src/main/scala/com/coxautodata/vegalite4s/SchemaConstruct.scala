@@ -1,7 +1,7 @@
 package com.coxautodata.vegalite4s
 
 import com.coxautodata.vegalite4s.providers.SchemaProvider
-import com.coxautodata.vegalite4s.renderers.{PlotRenderer, WindowDisplay}
+import com.coxautodata.vegalite4s.renderers.PlotRenderer
 import io.circe.{Json, JsonObject}
 
 trait SchemaConstruct[T] extends SpecConstruct[T] {
@@ -43,11 +43,5 @@ trait SchemaConstruct[T] extends SpecConstruct[T] {
     */
   def show(implicit r: PlotRenderer): Unit =
     r.render(this)
-
-  /**
-    * The [[WindowDisplay]] renderer associated with this plot.
-    * Not initialised unless called.
-    */
-  lazy val window = WindowDisplay(this)
 
 }

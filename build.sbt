@@ -7,7 +7,6 @@ import sbt.url
 import xerial.sbt.Sonatype._
 
 val circeV = "0.11.1"
-val scalafxV = "8.0.144-R12"
 val scalatestV = "3.0.4"
 val spark2V = "2.4.0"
 val vegaliteV = "2.6.0"
@@ -36,7 +35,6 @@ lazy val core = project
     settings,
     libraryDependencies ++= Seq(
       "org.scala-lang" % "scala-reflect" % scalaVersion.value % "compile",
-      "org.scalafx" %% "scalafx" % scalafxV % "compile",
       "com.typesafe.scala-logging" %% "scala-logging" % scalaloggingV % "compile",
       "org.slf4j" % "slf4j-simple" % slf4jV % "compile",
       "io.circe" %% "circe-core" % circeV % "compile",
