@@ -4,19 +4,23 @@ package com.coxautodata.vegalite4s.providers
   * VegaLite Javascript dependency provider that references the Vega
   * dependency by providing a URL to the Jsdelivr CDN.
   *
-  * @param vegaVersion Version of Vega to reference
-  * @param vegaLiteVersion Version of Vega-lite to reference
+  * @param vegaVersion      Version of Vega to reference
+  * @param vegaLiteVersion  Version of Vega-lite to reference
   * @param vegaEmbedVersion Version of Vega-embed to reference
   */
 case class JsdelivrProvider(vegaVersion: String,
                             vegaLiteVersion: String,
-                            vegaEmbedVersion: String) extends LibraryProvider {
+                            vegaEmbedVersion: String,
+                            additionalLibraries: Seq[(String, String)] = Seq.empty
+                           ) extends LibraryProvider {
 
-  override def getJavascriptLibraryURLs: Seq[String] =
+  override def getJavascriptLibraryURLs: Seq[String] = {
     Seq(
-      s"https://cdn.jsdelivr.net/npm/vega@$vegaVersion",
-      s"https://cdn.jsdelivr.net/npm/vega-lite@$vegaLiteVersion",
-      s"https://cdn.jsdelivr.net/npm/vega-embed@$vegaEmbedVersion"
-    )
+      "vega" -> vegaVersion,
+      "vega-lite" -> vegaLiteVersion,
+      "vega-embed" -> vegaEmbedVersion
+    ) ++ additionalLibraries
+  }.map { case (k, v) => s"https://cdn.jsdelivr.net/npm/$k@$v" }
+
 
 }

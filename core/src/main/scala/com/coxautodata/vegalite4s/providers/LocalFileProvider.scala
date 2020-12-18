@@ -12,11 +12,11 @@ object LocalFileProvider {
   def apply(vegaLiteSchemaVersion: String,
             vegaPath: String,
             vegaLitePath: String,
-            vegaEmbedPath: String): LibraryProvider =
+            vegaEmbedPath: String,
+            additionalPaths: String*): LibraryProvider =
     new InputStreamProvider(
-      new FileInputStream(vegaPath),
-      new FileInputStream(vegaLitePath),
-      new FileInputStream(vegaEmbedPath)
+      (List(vegaPath, vegaLitePath, vegaEmbedPath) ++ additionalPaths)
+        .map(new FileInputStream(_)): _*
     )
 
 }

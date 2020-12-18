@@ -8,7 +8,7 @@ package object providers {
     * A Vega dependency provider that references the latest available VegaLite library
     * available on the Jsdelivr CDN
     */
-  object VegaLiteLatestCDNVersion extends VegaLiteProvider(JsdelivrProvider("5", "3", "4"), "3")
+  object VegaLiteLatestCDNVersion extends VegaLiteProvider(JsdelivrProvider("5", "3", "4", Seq("apache-arrow" -> "0.14.0", "vega-loader-arrow" -> "0.0.7")), "3")
 
   /**
     * A Vega dependency provider that references the latest available Vega library

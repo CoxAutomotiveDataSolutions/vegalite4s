@@ -24,7 +24,7 @@ import scala.collection.immutable.Stream.cons
   */
 object ClasspathJarResourceProvider {
 
-  def apply(): LibraryProvider = {
+  def apply(additionalLibraryFilenames: String*): LibraryProvider = {
     val streams = findResourcesByFilename(
       List("vega.min.js", "vega-lite.min.js", "vega-embed.min.js")
     )
